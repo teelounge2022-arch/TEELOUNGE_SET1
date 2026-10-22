@@ -156,9 +156,9 @@ export function mountStockMap(root, store) {
   UNITS.sort((a, b) => a.code.localeCompare(b.code));
   const UNIT_SPEC = new Map(UNITS.map((u) => [u.code, u]));
 
-  // 업무 데스크 번호: 출입구 쪽부터 북쪽 줄 1~4, 남쪽 줄 5~8. seat 은 의자 자리(AI 작업 표시를 올릴 곳)
-  const DESKS = Array.from({ length: 8 }, (_, k) => {
-    const i = k % 4, north = k < 4, x0 = 2 + i * 1.5;
+  // 업무 데스크 6자리 = AI 1~6: 출입구 쪽부터 북쪽 줄 1~3, 남쪽 줄 4~6. seat 은 의자 자리(AI 작업 표시를 올릴 곳)
+  const DESKS = Array.from({ length: 6 }, (_, k) => {
+    const i = k % 3, north = k < 3, x0 = 3.5 + i * 1.5;
     return {
       no: k + 1,
       x: [x0 + 0.02, x0 + 1.48],
@@ -395,7 +395,7 @@ export function mountStockMap(root, store) {
       monitor(d.monitor[0], d.monitor[1], false);
       chair(d.seat[0], d.seat[1]);
     }
-    rblock(2.0, 8.0, 3.03, 3.07, 0.74, 0.4, '#f2f2ef');
+    rblock(3.5, 8.0, 3.03, 3.07, 0.74, 0.4, '#f2f2ef');
     // 커피 자리 · 냉장고 · 큰 화분 (라운지 왼쪽 벽)
     rblock(8.9, 9.85, 0.15, 0.6, 0, 0.9, '#f1efea');
     rblock(9.1, 9.5, 0.2, 0.5, 0.9, 0.3, '#2b2b2b');
@@ -696,7 +696,7 @@ export function mountStockMap(root, store) {
     ['포장실', 2.0, 1.4, 8.2], ['출입구', 0.55, 1.0, DOOR_MID],
   ].map(([t, x, y, z]) => { const o = makeLabel('lbl-area', t); o.position.set(X(x), y, Z(z)); scene.add(o); return o; });
   const deskLabels = DESKS.map((d) => {
-    const o = makeLabel('lbl-desk', `데스크 ${d.no}`);
+    const o = makeLabel('lbl-desk', `AI ${d.no}`);
     o.position.set(X(d.seat[0]), 0.95, Z(d.seat[1]));
     scene.add(o);
     return o;
