@@ -151,7 +151,7 @@ export function mountStockMap(root, store) {
   ].forEach(([letters, z, style, front, levels, xs]) => {
     xs.forEach((x, i) => UNITS.push({ code: '6-' + letters[i], zone: '6', x, z, h: style === 'white' ? 1.9 : 1.8, levels, style, front }));
   });
-  // 창고 데스크: 대표님 자리와 일자 창고를 나누는 3단(1층·2층·3층) 데스크. 창고 쪽에서 꺼내요
+  // 창고 데스크: 대표님 자리와 일자 창고를 나누는 3단(1층·2층·3층) 데스크. 뒷판 없이 양쪽이 뚫려 있어요
   UNITS.push({ code: '6-J', zone: '6', x: [10.0, 10.6], z: [6.25, 9.9], h: 1.0, levels: 3, style: 'desk', front: 'W' });
   UNITS.sort((a, b) => a.code.localeCompare(b.code));
   const UNIT_SPEC = new Map(UNITS.map((u) => [u.code, u]));
@@ -293,14 +293,15 @@ export function mountStockMap(root, store) {
   // 남쪽 벽 (일자 창고 뒤)
   const south = wallGroup([0, 0, 1], [0, 0, Z(10)], 0.3);
   rblock(-0.07, E + 0.07, 9.93, 10.07, 0, WALL_H, WALL, south.g);
-  // 서쪽: 1번 수납장 바로 옆 모서리의 유리 양여닫이 출입문
+  // 서쪽: 업무 데스크 줄 바로 옆의 유리 양여닫이 출입문
+  const DOOR = [1.8, 3.8], DOOR_MID = (DOOR[0] + DOOR[1]) / 2;
   const west = wallGroup([-1, 0, 0], [X(0), 0, 0], 0.3);
-  rblock(-0.07, 0.07, -0.07, 0.3, 0, WALL_H, WALL, west.g);
-  rblock(-0.07, 0.07, 2.3, 10.07, 0, WALL_H, WALL, west.g);
-  rblock(-0.07, 0.07, 0.3, 2.3, 2.2, 0.3, WALL, west.g);
-  rblock(-0.02, 0.02, 0.3, 2.3, 0, 2.2, GLASS, west.g, false);
-  for (const z of [0.3, 0.55, 1.3, 2.05, 2.3]) rblock(-0.04, 0.04, z - 0.02, z + 0.02, 0, 2.2, '#b9bec2', west.g);
-  for (const z of [1.18, 1.42]) rblock(0.03, 0.07, z - 0.012, z + 0.012, 0.75, 0.6, '#9aa1a7', west.g);
+  rblock(-0.07, 0.07, -0.07, DOOR[0], 0, WALL_H, WALL, west.g);
+  rblock(-0.07, 0.07, DOOR[1], 10.07, 0, WALL_H, WALL, west.g);
+  rblock(-0.07, 0.07, DOOR[0], DOOR[1], 2.2, 0.3, WALL, west.g);
+  rblock(-0.02, 0.02, DOOR[0], DOOR[1], 0, 2.2, GLASS, west.g, false);
+  for (const z of [DOOR[0], DOOR[0] + 0.25, DOOR_MID, DOOR[1] - 0.25, DOOR[1]]) rblock(-0.04, 0.04, z - 0.02, z + 0.02, 0, 2.2, '#b9bec2', west.g);
+  for (const z of [DOOR_MID - 0.12, DOOR_MID + 0.12]) rblock(0.03, 0.07, z - 0.012, z + 0.012, 0.75, 0.6, '#9aa1a7', west.g);
   // 동쪽: 라운지 · 대표님 자리 쪽 통창
   const east = wallGroup([1, 0, 0], [X(E), 0, 0], 0.3);
   rblock(E - 0.07, E + 0.07, -0.07, 10.07, 0, 0.3, WALL, east.g);
@@ -525,7 +526,6 @@ export function mountStockMap(root, store) {
     },
     desk(g, u, L, D, floors, rnd, stock) {
       const c = '#f3f2ee', t = 0.03;
-      block(g, L, u.h, t, 0, 0, -D / 2 + t / 2, c);
       for (const x of [-L / 2 + t / 2, L / 2 - t / 2]) block(g, t, u.h, D, x, 0, 0, c);
       const bays = Math.max(2, Math.round(L / 1.2));
       for (let k = 1; k < bays; k++) block(g, t, u.h - 0.04, D, -L / 2 + k * L / bays, 0, 0, c);
@@ -685,7 +685,7 @@ export function mountStockMap(root, store) {
   });
   const areaLabels = [
     ['업무 데스크', 5.0, 1.25, 3.05], ['대표님 자리', 11.75, 1.5, 9.1], ['라운지', 11.3, 1.2, 2.8],
-    ['포장실', 2.0, 1.4, 8.2], ['출입구', 0.55, 1.0, 1.3],
+    ['포장실', 2.0, 1.4, 8.2], ['출입구', 0.55, 1.0, DOOR_MID],
   ].map(([t, x, y, z]) => { const o = makeLabel('lbl-area', t); o.position.set(X(x), y, Z(z)); scene.add(o); return o; });
 
   // ───────── 상태 · 화면 ─────────
