@@ -151,6 +151,8 @@ export function mountStockMap(root, store) {
   ].forEach(([letters, z, style, front, levels, xs]) => {
     xs.forEach((x, i) => UNITS.push({ code: '6-' + letters[i], zone: '6', x, z, h: style === 'white' ? 1.9 : 1.8, levels, style, front }));
   });
+  // 창고 데스크: 대표님 자리와 일자 창고를 나누는 낮은 데스크. 창고 쪽에서 꺼내고 윗판에도 올려요
+  UNITS.push({ code: '6-J', zone: '6', x: [10.0, 10.6], z: [6.25, 9.9], h: 1.0, levels: 3, style: 'desk', front: 'W' });
   UNITS.sort((a, b) => a.code.localeCompare(b.code));
   const UNIT_SPEC = new Map(UNITS.map((u) => [u.code, u]));
 
@@ -307,9 +309,6 @@ export function mountStockMap(root, store) {
   for (let k = 0; k <= 8; k++) { const z = k * 10 / 8; rblock(E - 0.05, E + 0.05, z - 0.03, z + 0.03, 0.3, 2.0, WALL, east.g); }
   // 대표님 자리 뒤 초록 벽 (남쪽 벽 안쪽 면)
   rblock(10.14, E - 0.07, 9.85, 9.93, 0, WALL_H, '#2f5a48', south.g);
-  // 일자 창고 동쪽 끝 칸막이
-  const part = wallGroup([-1, 0, 0], [X(10.07), 0, 0], 1.0);
-  rblock(10.0, 10.14, 6.1, 9.93, 0, WALL_H, WALL, part.g);
 
   function textPlane(text, w, h, color) {
     const c = document.createElement('canvas');
@@ -450,6 +449,7 @@ export function mountStockMap(root, store) {
     const n = u.levels;
     if (u.style === 'cube') return Array.from({ length: n }, (_, i) => i === 0 ? 0.03 : i * u.h / (n - 1));
     if (u.style === 'boxes') return Array.from({ length: n }, (_, i) => i * u.h / n);
+    if (u.style === 'desk') return [0.08, 0.5, u.h].slice(0, n);
     if (u.style === 'organizer') return Array.from({ length: n }, (_, i) => 0.03 + i * (u.h - 0.03) / n);
     const base = 0.1, step = (u.h - base) / n;
     return Array.from({ length: n }, (_, i) => base + i * step);
@@ -522,6 +522,19 @@ export function mountStockMap(root, store) {
         for (let j = 0; j < n; j++) stock.push([-L / 2 + (k + 0.5) * cw, floors[r] + j * 0.115, 0.01, cw * 0.82, 0.11, D * 0.8, KHAKI[Math.floor(rnd() * KHAKI.length)]]);
       }
       stock.push([-L / 4, u.h, 0, L * 0.48, 0.38, D * 1.3, '#c9a473'], [L / 4, u.h, 0, L * 0.46, 0.32, D * 1.2, '#bf9a69']);
+    },
+    desk(g, u, L, D, floors, rnd, stock) {
+      const c = '#f3f2ee', t = 0.03;
+      block(g, L, u.h, t, 0, 0, -D / 2 + t / 2, c);
+      for (const x of [-L / 2 + t / 2, L / 2 - t / 2]) block(g, t, u.h, D, x, 0, 0, c);
+      const bays = Math.max(2, Math.round(L / 1.2));
+      for (let k = 1; k < bays; k++) block(g, t, u.h - 0.04, D, -L / 2 + k * L / bays, 0, 0, c);
+      block(g, L, t, D, 0, floors[0] - t, 0, c);
+      block(g, L, t, D, 0, floors[1] - t, 0, c);
+      block(g, L + 0.04, 0.04, D + 0.04, 0, u.h - 0.04, 0, '#e9e6df');
+      fillLevel(stock, rnd, u, L, D, floors[0], floors[1] - floors[0] - 0.08, 0);
+      fillLevel(stock, rnd, u, L, D, floors[1], u.h - floors[1] - 0.1, 1);
+      for (let x = -L / 2 + 0.2; x < L / 2 - 0.5; x += 0.7 + rnd() * 0.5) stock.push([x + 0.2, u.h, 0, 0.42, 0.18 + rnd() * 0.2, D * 0.7, rnd() > 0.5 ? '#c9a473' : '#bf9a69']);
     },
     boxes(g, u, L, D, floors, rnd, stock) {
       const tierH = u.h / u.levels;
