@@ -151,7 +151,7 @@ export function mountStockMap(root, store) {
   ].forEach(([letters, z, style, front, levels, xs]) => {
     xs.forEach((x, i) => UNITS.push({ code: '6-' + letters[i], zone: '6', x, z, h: style === 'white' ? 1.9 : 1.8, levels, style, front }));
   });
-  // 창고 데스크: 대표님 자리와 일자 창고를 나누는 낮은 데스크. 창고 쪽에서 꺼내고 윗판에도 올려요
+  // 창고 데스크: 대표님 자리와 일자 창고를 나누는 3단(1층·2층·3층) 데스크. 창고 쪽에서 꺼내요
   UNITS.push({ code: '6-J', zone: '6', x: [10.0, 10.6], z: [6.25, 9.9], h: 1.0, levels: 3, style: 'desk', front: 'W' });
   UNITS.sort((a, b) => a.code.localeCompare(b.code));
   const UNIT_SPEC = new Map(UNITS.map((u) => [u.code, u]));
@@ -449,7 +449,7 @@ export function mountStockMap(root, store) {
     const n = u.levels;
     if (u.style === 'cube') return Array.from({ length: n }, (_, i) => i === 0 ? 0.03 : i * u.h / (n - 1));
     if (u.style === 'boxes') return Array.from({ length: n }, (_, i) => i * u.h / n);
-    if (u.style === 'desk') return [0.08, 0.5, u.h].slice(0, n);
+    if (u.style === 'desk') return Array.from({ length: n }, (_, i) => 0.06 + i * (u.h - 0.1) / n);
     if (u.style === 'organizer') return Array.from({ length: n }, (_, i) => 0.03 + i * (u.h - 0.03) / n);
     const base = 0.1, step = (u.h - base) / n;
     return Array.from({ length: n }, (_, i) => base + i * step);
@@ -529,12 +529,9 @@ export function mountStockMap(root, store) {
       for (const x of [-L / 2 + t / 2, L / 2 - t / 2]) block(g, t, u.h, D, x, 0, 0, c);
       const bays = Math.max(2, Math.round(L / 1.2));
       for (let k = 1; k < bays; k++) block(g, t, u.h - 0.04, D, -L / 2 + k * L / bays, 0, 0, c);
-      block(g, L, t, D, 0, floors[0] - t, 0, c);
-      block(g, L, t, D, 0, floors[1] - t, 0, c);
+      for (const y of floors) block(g, L, t, D, 0, y - t, 0, c);
       block(g, L + 0.04, 0.04, D + 0.04, 0, u.h - 0.04, 0, '#e9e6df');
-      fillLevel(stock, rnd, u, L, D, floors[0], floors[1] - floors[0] - 0.08, 0);
-      fillLevel(stock, rnd, u, L, D, floors[1], u.h - floors[1] - 0.1, 1);
-      for (let x = -L / 2 + 0.2; x < L / 2 - 0.5; x += 0.7 + rnd() * 0.5) stock.push([x + 0.2, u.h, 0, 0.42, 0.18 + rnd() * 0.2, D * 0.7, rnd() > 0.5 ? '#c9a473' : '#bf9a69']);
+      floors.forEach((y, i) => fillLevel(stock, rnd, u, L, D, y, (floors[i + 1] ?? u.h - 0.04) - y - 0.05, i));
     },
     boxes(g, u, L, D, floors, rnd, stock) {
       const tierH = u.h / u.levels;
