@@ -1,0 +1,168 @@
+/* 재고 지도 화면 전용 스타일. 모든 규칙이 .stockmap 안에서만 적용돼요. */
+.stockmap { position: relative; flex: 1; min-height: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--fg); font-family: var(--font-ui); }
+.stockmap [hidden] { display: none !important; }
+/* Layout: 3D 사무실 모형이 화면 전체를 채우고, 검색 패널(데스크톱 왼쪽 · 휴대폰 위)과 선반 상세(데스크톱 오른쪽 · 휴대폰 아래)가 그 위에 떠 있어요 */
+.stockmap {
+  --bg: #e9ecea;
+  --scene: #e3e7e4;
+  --panel: #ffffff;
+  --panel-2: #f2f4f2;
+  --fg: #1b2120;
+  --muted: #5d6864;
+  --line: #dbe0dd;
+  --accent: #d9561f;
+  --accent-soft: #fbe2d4;
+  --accent-ink: #ffffff;
+  --danger: #b3261e;
+  --font-ui: var(--font-plex-kr), "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-code: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --shadow: 0 1px 2px rgb(16 28 24 / .06), 0 10px 30px rgb(16 28 24 / .12);
+}
+@media (prefers-color-scheme: dark) {
+  .stockmap {
+    --bg: #121614; --scene: #181d1b; --panel: #1c2220; --panel-2: #242b28; --fg: #e7ece9; --muted: #9aa5a0;
+    --line: #2f3734; --accent: #f0743a; --accent-soft: #3b2519; --accent-ink: #1b0e07; --danger: #ff8a80;
+    --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 10px 30px rgb(0 0 0 / .45);
+    color-scheme: dark;
+  }
+}
+
+.stockmap #app { position: relative; height: 100%; }
+.stockmap #stage { position: absolute; inset: 0; background: var(--scene); isolation: isolate; }
+.stockmap #stage canvas { display: block; touch-action: none; }
+/* 지도를 드래그할 때 패널 글씨가 같이 선택되지 않게 */
+.stockmap .ui, .stockmap #stage { -webkit-user-select: none; user-select: none; }
+.stockmap .search input { -webkit-user-select: text; user-select: text; }
+.stockmap .label-layer { position: absolute; inset: 0; pointer-events: none; }
+
+.stockmap .ui {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 16px;
+}
+.stockmap .panel, .stockmap .sheet {
+  pointer-events: auto; display: flex; flex-direction: column; max-height: 100%; min-height: 0;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden;
+}
+.stockmap .panel { width: 340px; }
+.stockmap .sheet { width: 320px; }
+
+.stockmap .panel-top { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 14px 14px 12px; border-bottom: 1px solid var(--line); }
+.stockmap .title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.stockmap .eyebrow { font-family: var(--font-code); font-size: 11px; font-weight: 500; letter-spacing: .08em; color: var(--muted); }
+.stockmap h1 { margin: 2px 0 0; font-size: 18px; font-weight: 700; letter-spacing: -.01em; text-wrap: balance; }
+.stockmap .pill { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+
+.stockmap .search { display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 6px 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-2); }
+.stockmap .search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.stockmap .search svg { flex: none; color: var(--muted); }
+.stockmap .search input { flex: 1; min-width: 0; width: 100%; border: 0; background: transparent; font: inherit; font-size: 15px; color: var(--fg); outline: none; }
+.stockmap .search input::placeholder { color: var(--muted); }
+.stockmap .search input::-webkit-search-cancel-button { display: none; }
+
+.stockmap .tools { display: flex; flex-wrap: wrap; gap: 6px; }
+.stockmap .btn { font: inherit; font-size: 12.5px; font-weight: 500; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; }
+.stockmap .btn:hover { background: var(--panel-2); }
+.stockmap .btn-ghost { border-color: transparent; background: transparent; color: var(--muted); padding: 6px 8px; }
+.stockmap #btn-zones { display: none; }
+.stockmap button:focus-visible, .stockmap .lbl:focus-visible, .stockmap .level:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.stockmap .list { flex: 1; min-height: 0; overflow: auto; padding: 6px; }
+.stockmap .list-head { font-size: 12px; font-weight: 600; color: var(--muted); padding: 8px 8px 4px; }
+.stockmap .row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; padding: 9px 8px; border: 0; border-radius: 8px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.stockmap .row:hover, .stockmap .row.is-on { background: var(--panel-2); }
+.stockmap .row-title { display: block; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.stockmap .row-meta { display: block; font-size: 12px; color: var(--muted); margin-top: 1px; }
+.stockmap .badge { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--fg); color: var(--panel); font-family: var(--font-code); font-size: 12px; font-weight: 600; }
+.stockmap .row.is-on .badge { background: var(--accent); color: var(--accent-ink); }
+.stockmap .loc { font-family: var(--font-code); font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 3px 7px; border-radius: 6px; white-space: nowrap; }
+.stockmap .qty { font-size: 13px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.stockmap .empty { font-size: 13px; color: var(--muted); padding: 10px 8px; line-height: 1.55; }
+.stockmap .note { margin: 0; padding: 10px 14px 12px; font-size: 11.5px; line-height: 1.5; color: var(--muted); border-top: 1px solid var(--line); }
+
+.stockmap .sheet-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 14px; border-bottom: 1px solid var(--line); }
+.stockmap .code-big { display: block; font-family: var(--font-code); font-size: 24px; font-weight: 600; letter-spacing: .02em; }
+.stockmap .sheet-sub { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.stockmap .levels { list-style: none; margin: 0; padding: 6px 8px 10px; overflow: auto; min-height: 0; }
+.stockmap .level { padding: 8px 8px; border-radius: 8px; cursor: pointer; }
+.stockmap .level + .level { margin-top: 2px; }
+.stockmap .level:hover { background: var(--panel-2); }
+.stockmap .level.is-active { background: var(--accent-soft); }
+.stockmap .lv { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.stockmap .level.is-active .lv { color: var(--accent); }
+.stockmap .items { list-style: none; margin: 4px 0 0; padding: 0; }
+.stockmap .item { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; padding: 3px 0; }
+.stockmap .item span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.stockmap .item small { color: var(--muted); font-size: 12px; }
+.stockmap .lv-empty { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+
+/* 3D 위 이름표 */
+.stockmap .lbl { font-family: var(--font-ui); white-space: nowrap; user-select: none; }
+.stockmap .lbl-zone { display: flex; align-items: center; gap: 6px; padding: 3px 10px 3px 3px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); box-shadow: var(--shadow); font-size: 12px; font-weight: 600; color: var(--fg); cursor: pointer; pointer-events: auto; }
+.stockmap .lbl-zone .badge { width: 20px; height: 20px; font-size: 11px; }
+.stockmap .lbl-zone.is-hit .badge { background: var(--accent); color: var(--accent-ink); }
+.stockmap .lbl-area { font-size: 11.5px; font-weight: 500; color: var(--muted); padding: 2px 7px; border-radius: 6px; background: var(--panel); background: color-mix(in srgb, var(--panel) 72%, transparent); }
+.stockmap .lbl-unit { font-family: var(--font-code); font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 6px; background: var(--panel); border: 1px solid var(--line); color: var(--fg); cursor: pointer; pointer-events: auto; }
+.stockmap .lbl-unit.is-hit { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+/* 재고 편집 */
+.stockmap .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.stockmap .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.stockmap .btn-primary:hover { background: var(--accent); filter: brightness(1.06); }
+.stockmap .btn-danger { color: var(--danger); }
+.stockmap .btn:disabled { opacity: .55; cursor: default; filter: none; }
+.stockmap .link { border: 0; background: none; padding: 0; font: inherit; color: var(--accent); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.stockmap .card { display: grid; gap: 8px; margin: 6px 4px 10px; padding: 12px; border: 1px dashed var(--line); border-radius: 10px; }
+.stockmap .card strong { font-size: 14px; }
+.stockmap .card p { margin: 0; font-size: 13px; line-height: 1.55; color: var(--muted); }
+.stockmap .item { align-items: center; }
+.stockmap .item-main { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.stockmap .stepper { display: inline-flex; align-items: center; gap: 2px; flex: none; }
+.stockmap .stepper button { width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); font: inherit; font-size: 16px; line-height: 1; cursor: pointer; }
+.stockmap .stepper button:hover { background: var(--panel-2); }
+.stockmap .stepper output { min-width: 40px; text-align: center; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.stockmap .icon-btn { flex: none; border: 0; background: none; color: var(--muted); padding: 4px 6px; border-radius: 6px; font: inherit; font-size: 12px; cursor: pointer; }
+.stockmap .icon-btn:hover { background: var(--panel-2); color: var(--fg); }
+.stockmap .add-here { margin: 4px 0 0 -6px; color: var(--accent); }
+
+.stockmap dialog { width: min(460px, calc(100vw - 32px)); max-height: calc(100% - 32px); padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--fg); box-shadow: var(--shadow); }
+.stockmap dialog::backdrop { background: rgb(10 14 12 / .38); }
+.stockmap .dlg { display: grid; gap: 14px; padding: 18px; }
+.stockmap .dlg h2 { margin: 0; font-size: 17px; font-weight: 700; }
+.stockmap .field { display: grid; gap: 5px; min-width: 0; }
+.stockmap .field label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.stockmap .field input, .stockmap .field select, .stockmap .field textarea { box-sizing: border-box; width: 100%; min-width: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); color: var(--fg); font: inherit; font-size: 15px; }
+.stockmap .field textarea { min-height: 150px; resize: vertical; font-family: var(--font-code); font-size: 13px; line-height: 1.5; }
+.stockmap .field input:focus, .stockmap .field select:focus, .stockmap .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.stockmap .grid2, .stockmap .grid3 { display: grid; gap: 10px; }
+.stockmap .grid2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.stockmap .grid3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.stockmap .dlg-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.stockmap .dlg-foot .right { display: flex; gap: 8px; margin-left: auto; }
+.stockmap .hint { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--muted); }
+.stockmap .hint code { font-family: var(--font-code); font-size: 12px; }
+.stockmap .preview { max-height: 150px; overflow: auto; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel-2); font-size: 12.5px; line-height: 1.55; }
+.stockmap .preview .bad { color: var(--danger); }
+.stockmap .toast { position: absolute; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 5; transform: translateX(-50%); max-width: calc(100% - 32px); padding: 9px 14px; border-radius: 10px; background: var(--fg); color: var(--panel); font-size: 13px; box-shadow: var(--shadow); pointer-events: none; }
+
+@media (max-width: 719px) {
+  .stockmap .ui { flex-direction: column; justify-content: flex-start; gap: 10px; padding-block: 10px; }
+  .stockmap .panel { width: 100%; max-height: 58%; flex: none; }
+  .stockmap .panel-top { padding: 10px 12px; gap: 8px; }
+  .stockmap h1 { font-size: 16px; }
+  .stockmap .eyebrow { display: none; }
+  .stockmap .sheet { width: 100%; margin-top: auto; max-height: 46%; flex: none; }
+  .stockmap .panel:not(.list-open) .list, .stockmap .panel:not(.list-open) .note { display: none; }
+  .stockmap #btn-zones { display: inline-block; }
+  .stockmap .tools, .stockmap .actions { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .stockmap .tools::-webkit-scrollbar, .stockmap .actions::-webkit-scrollbar { display: none; }
+  .stockmap .tools .btn, .stockmap .actions .btn { flex: none; }
+}
+/* 낮은 창(앱 옆 패널 등)에서는 제목 줄을 숨겨 지도를 더 보여줘요 */
+@media (max-width: 719px) and (max-height: 640px) {
+  .stockmap .title-row { display: none; }
+  .stockmap .panel { max-height: 64%; }
+}
+@media (prefers-reduced-motion: reduce) { .stockmap * { scroll-behavior: auto !important; } }
