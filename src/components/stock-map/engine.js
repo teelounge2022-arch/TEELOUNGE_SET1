@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const TEMPLATE = `<div id="app">
   <div id="stage" aria-label="TEE LOUNGE 사무실 3D 모형. 드래그해서 돌리고, 선반을 누르면 안에 든 재고가 보여요."></div>
@@ -208,8 +209,10 @@ export function mountStockMap(root, store) {
 
   const stage = $('#stage');
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  // 성능: 해상도 배율은 1.5배까지, 그림자는 장면이 바뀔 때만 다시 계산해요
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
   renderer.shadowMap.enabled = true;
+  renderer.shadowMap.autoUpdate = false;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   stage.appendChild(renderer.domElement);
 
@@ -226,6 +229,9 @@ export function mountStockMap(root, store) {
   controls.maxPolarAngle = Math.PI * 0.46;
   controls.minDistance = 2.5;
   controls.maxDistance = 60;
+  let dirty = true;
+  const invalidate = () => { dirty = true; };
+  controls.addEventListener('change', invalidate);
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0xb9b2a6, 1.9));
   const sun = new THREE.DirectionalLight(0xffffff, 2.1);
@@ -332,6 +338,7 @@ export function mountStockMap(root, store) {
     b.rotation.y = Math.PI;
     b.position.set(X(11.75), 1.75, Z(9.85) - 0.006);
     south.g.add(b); south.decor.push(b);
+    invalidate();
   }
   const signs = () => { if (!disposed) addSigns(); };
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(signs, signs);
@@ -591,6 +598,39 @@ export function mountStockMap(root, store) {
 
   const units = UNITS.map(buildUnit);
   const unitMap = new Map(units.map((R) => [R.u.code, R]));
+
+  // 성능: 움직이지 않는 선반 · 가구 조각 수천 개를 재질별로 하나씩 묶어서 그리기 횟수를 줄여요
+  function mergeStatic() {
+    scene.updateMatrixWorld(true);
+    const wallGroups = new Set(walls.map((w) => w.g));
+    const keep = new Set([HIT_MAT, GLASS, ...accentMats]);
+    const buckets = new Map();
+    scene.traverse((o) => {
+      if (!o.isMesh || o.isInstancedMesh || Array.isArray(o.material) || keep.has(o.material) || o.material.map || o.material.transparent) return;
+      for (let p = o.parent; p; p = p.parent) if (wallGroups.has(p)) return;
+      const key = o.material.uuid + (o.castShadow ? '|cast' : '');
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key).push(o);
+    });
+    for (const meshes of buckets.values()) {
+      if (meshes.length < 2) continue;
+      const parts = meshes.map((m) => {
+        const g = m.geometry.clone();
+        g.clearGroups();
+        return g.applyMatrix4(m.matrixWorld);
+      });
+      const merged = mergeGeometries(parts, false);
+      parts.forEach((g) => g.dispose());
+      if (!merged) continue;
+      const mesh = new THREE.Mesh(merged, meshes[0].material);
+      mesh.castShadow = meshes[0].castShadow;
+      mesh.receiveShadow = true;
+      meshes.forEach((m) => m.removeFromParent());
+      scene.add(mesh);
+    }
+    renderer.shadowMap.needsUpdate = true;
+  }
+  mergeStatic();
   const unitsOfZone = (id) => units.filter((R) => R.u.zone === id);
 
   // 구역 · 공간 이름표
@@ -883,6 +923,7 @@ export function mountStockMap(root, store) {
       const hit = hits.has(R.u.code), sel = state.selected === R.u.code;
       const n = counts.get(R.u.code) || 0;
       R.glow.visible = R.edges.visible = hit || sel;
+      R.glow.material.opacity = sel ? 0.24 : 0.13;
       R.label.element.textContent = n ? `${R.u.code} · ${n}` : R.u.code;
       R.label.visible = state.labelMode === 'unit' || hit || sel;
       R.label.element.classList.toggle('is-hit', hit || sel);
@@ -894,6 +935,7 @@ export function mountStockMap(root, store) {
       o.element.classList.toggle('is-hit', state.zone === id || unitsOfZone(id).some((R) => hits.has(R.u.code) || state.selected === R.u.code));
     }
     for (const o of areaLabels) o.visible = state.labelMode !== 'off';
+    invalidate();
   }
 
   function refresh() { renderChrome(); renderList(); renderSheet(); refresh3D(); layoutView(); }
@@ -1227,6 +1269,7 @@ export function mountStockMap(root, store) {
     camera.updateProjectionMatrix();
     const m = 0.04;
     vis = { x0: (left / W) * 2 - 1 + m, x1: ((W - right) / W) * 2 - 1 - m, y0: 1 - ((H - bottom) / H) * 2 + m, y1: 1 - (top / H) * 2 - m };
+    invalidate();
   }
 
   function resize() {
@@ -1234,6 +1277,7 @@ export function mountStockMap(root, store) {
     renderer.setSize(W, H);
     labelRenderer.setSize(W, H);
     layoutView();
+    invalidate();
   }
 
   // ───────── 동작 ─────────
@@ -1335,22 +1379,30 @@ export function mountStockMap(root, store) {
     scene.background = new THREE.Color(cssVar('--scene') || '#e3e7e4');
     const a = cssVar('--accent') || '#d9561f';
     accentMats.forEach((m) => m.color.set(a));
+    invalidate();
   }
   on(matchMedia('(prefers-color-scheme: dark)'), 'change', applyTheme);
 
   // 카메라 쪽 벽은 낮춰서 안이 보이게
   const tmp = new THREE.Vector3();
   function updateWalls() {
+    let moved = false;
     for (const w of walls) {
       const outside = tmp.copy(camera.position).sub(w.p).dot(w.n) > 0;
       const target = outside ? w.low : 1;
-      w.cur = reduceMotion ? target : w.cur + (target - w.cur) * 0.18;
-      w.g.scale.y = w.cur;
-      for (const d of w.decor) d.visible = w.cur > 0.95;
+      const next = reduceMotion || Math.abs(target - w.cur) < 0.003 ? target : w.cur + (target - w.cur) * 0.18;
+      if (next === w.cur) continue;
+      w.cur = next;
+      w.g.scale.y = next;
+      for (const d of w.decor) d.visible = next > 0.95;
+      moved = true;
     }
+    if (moved) renderer.shadowMap.needsUpdate = true;
+    return moved;
   }
 
   const easeInOut = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+  // 성능: 카메라 · 벽 · 선택이 바뀐 프레임만 다시 그려요 (가만히 있을 때는 GPU를 쓰지 않아요)
   function frame(now) {
     rafId = requestAnimationFrame(frame);
     if (tween) {
@@ -1359,11 +1411,12 @@ export function mountStockMap(root, store) {
       camera.position.lerpVectors(tween.p0, tween.p1, e);
       controls.target.lerpVectors(tween.t0, tween.t1, e);
       if (k === 1) tween = null;
+      dirty = true;
     }
     controls.update();
-    updateWalls();
-    const sel = state.selected && unitMap.get(state.selected);
-    for (const R of units) R.glow.material.opacity = R === sel ? (reduceMotion ? 0.24 : 0.17 + 0.09 * Math.sin(now / 260)) : 0.13;
+    if (updateWalls()) dirty = true;
+    if (!dirty) return;
+    dirty = false;
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
   }
