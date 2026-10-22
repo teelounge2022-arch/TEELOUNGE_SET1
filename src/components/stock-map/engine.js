@@ -141,13 +141,12 @@ export function mountStockMap(root, store) {
     { code: '4-B', zone: '4', x: [0.15, 0.6], z: [8.1, 9.3], h: 1.8, levels: 5, style: 'white', front: 'E' },
     { code: '5-A', zone: '5', x: [0.3, 1.85], z: [9.45, 9.95], h: 1.8, levels: 4, style: 'chrome', front: 'N', topBins: true },
     { code: '5-B', zone: '5', x: [1.85, 3.4], z: [9.45, 9.95], h: 1.8, levels: 4, style: 'chrome', front: 'N', topBins: true },
-    { code: '6-M', zone: '6', x: [12.45, 12.95], z: [6.9, 9.9], h: 1.8, levels: 4, style: 'chrome', front: 'W' },
   ];
-  // 일자 창고: 북쪽 크롬 줄(초록 벽 뒤) · 가운데 흰색 줄 · 남쪽 벽 크롬 줄
+  // 일자 창고: 원목 선반 뒤 크롬 줄 · 가운데 흰색 줄 · 남쪽 벽 크롬 줄. 동쪽 끝은 칸막이, 그 너머가 대표님 자리
   [
-    ['ABCD', [6.4, 6.9], 'chrome', 'S', 4, [[3.8, 6.1], [6.1, 8.4], [8.4, 10.7], [10.7, 12.4]]],
-    ['EFGH', [7.8, 8.3], 'white', 'both', 5, [[4.2, 6.2], [6.2, 8.2], [8.2, 10.2], [10.2, 12.0]]],
-    ['IJKL', [9.45, 9.95], 'chrome', 'N', 4, [[3.8, 6.1], [6.1, 8.4], [8.4, 10.7], [10.7, 12.4]]],
+    ['ABC', [6.4, 6.9], 'chrome', 'S', 4, [[3.8, 5.9], [5.9, 8.0], [8.0, 10.0]]],
+    ['DEF', [7.8, 8.3], 'white', 'both', 5, [[4.2, 5.9], [5.9, 7.6], [7.6, 9.2]]],
+    ['GHI', [9.45, 9.95], 'chrome', 'N', 4, [[3.8, 5.9], [5.9, 8.0], [8.0, 10.0]]],
   ].forEach(([letters, z, style, front, levels, xs]) => {
     xs.forEach((x, i) => UNITS.push({ code: '6-' + letters[i], zone: '6', x, z, h: style === 'white' ? 1.9 : 1.8, levels, style, front }));
   });
@@ -177,13 +176,13 @@ export function mountStockMap(root, store) {
     ['옥스포드 셔츠', '스카이블루', 'L', 8, '6-B', 2],
     ['와이드 슬랙스', '블랙', '30', 13, '6-E', 4],
     ['와이드 슬랙스', '베이지', '28', 6, '6-F', 1],
-    ['니트 가디건', '베이지', 'FREE', 15, '6-M', 3],
-    ['꽈배기 니트', '크림', 'FREE', 9, '6-M', 2],
-    ['데님 팬츠', '연청', '30', 10, '6-I', 4],
-    ['패딩 조끼', '블랙', 'L', 5, '6-G', 4],
-    ['롱패딩', '블랙', 'XL', 4, '6-H', 3],
-    ['울 코트', '카멜', 'M', 3, '6-K', 4],
-    ['반품 검수 대기', '', '', 6, '6-L', 1],
+    ['니트 가디건', '베이지', 'FREE', 15, '6-C', 3],
+    ['꽈배기 니트', '크림', 'FREE', 9, '6-C', 2],
+    ['데님 팬츠', '연청', '30', 10, '6-G', 4],
+    ['패딩 조끼', '블랙', 'L', 5, '6-D', 4],
+    ['롱패딩', '블랙', 'XL', 4, '6-F', 3],
+    ['울 코트', '카멜', 'M', 3, '6-H', 4],
+    ['반품 검수 대기', '', '', 6, '6-I', 1],
     ['스니커즈', '그레이', '250', 5, '4-A', 4],
     ['슬리퍼', '블랙', '260', 12, '4-B', 2],
     ['에코백', '내추럴', 'FREE', 25, '5-A', 3],
@@ -300,17 +299,17 @@ export function mountStockMap(root, store) {
     door.position.x = X(0) + Math.sin(a) * 0.5;
     door.position.z = Z(4.4) + Math.cos(a) * 0.5;
   }
-  // 동쪽: 라운지 · 대표님 자리 쪽은 통창, 창고 쪽은 벽
+  // 동쪽: 라운지 · 대표님 자리 쪽 통창
   const east = wallGroup([1, 0, 0], [X(E), 0, 0], 0.3);
-  rblock(E - 0.07, E + 0.07, -0.07, 0.07, 0, WALL_H, WALL, east.g);
-  rblock(E - 0.07, E + 0.07, 0, 6.15, 0, 0.3, WALL, east.g);
-  rblock(E - 0.07, E + 0.07, 0, 6.15, 2.3, 0.2, WALL, east.g);
-  rblock(E - 0.02, E + 0.02, 0, 6.15, 0.3, 2.0, GLASS, east.g, false);
-  for (let k = 0; k <= 5; k++) { const z = k * 6.15 / 5; rblock(E - 0.05, E + 0.05, z - 0.03, z + 0.03, 0.3, 2.0, WALL, east.g); }
-  rblock(E - 0.07, E + 0.07, 6.15, 10.07, 0, WALL_H, WALL, east.g);
-  // 초록 벽: 대표님 자리와 일자 창고 사이
-  const gwall = wallGroup([0, 0, 1], [0, 0, Z(6.15)], 1.0);
-  rblock(9.6, E, 6.08, 6.22, 0, WALL_H, '#2f5a48', gwall.g);
+  rblock(E - 0.07, E + 0.07, -0.07, 10.07, 0, 0.3, WALL, east.g);
+  rblock(E - 0.07, E + 0.07, -0.07, 10.07, 2.3, 0.2, WALL, east.g);
+  rblock(E - 0.02, E + 0.02, 0, 10, 0.3, 2.0, GLASS, east.g, false);
+  for (let k = 0; k <= 8; k++) { const z = k * 10 / 8; rblock(E - 0.05, E + 0.05, z - 0.03, z + 0.03, 0.3, 2.0, WALL, east.g); }
+  // 대표님 자리 뒤 초록 벽 (남쪽 벽 안쪽 면)
+  rblock(10.14, E - 0.07, 9.85, 9.93, 0, WALL_H, '#2f5a48', south.g);
+  // 일자 창고 동쪽 끝 칸막이
+  const part = wallGroup([-1, 0, 0], [X(10.07), 0, 0], 1.0);
+  rblock(10.0, 10.14, 6.1, 9.93, 0, WALL_H, WALL, part.g);
 
   function textPlane(text, w, h, color) {
     const c = document.createElement('canvas');
@@ -331,8 +330,8 @@ export function mountStockMap(root, store) {
     north.g.add(a); north.decor.push(a);
     const b = textPlane('TEE LOUNGE', 1.5, 0.22, '#ffffff');
     b.rotation.y = Math.PI;
-    b.position.set(X(11.6), 1.75, Z(6.08) - 0.006);
-    gwall.g.add(b); gwall.decor.push(b);
+    b.position.set(X(11.75), 1.75, Z(9.85) - 0.006);
+    south.g.add(b); south.decor.push(b);
   }
   const signs = () => { if (!disposed) addSigns(); };
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(signs, signs);
@@ -391,18 +390,19 @@ export function mountStockMap(root, store) {
     // 냉장고 · 화분
     rblock(8.3, 8.9, 0.15, 0.75, 0, 1.35, '#2b2b2b');
     plant(9.4, 0.45, 1.1);
-    // 대표님 자리: 초록 벽을 등지고 앉아 라운지 쪽을 봐요
-    desk(10.5, 12.3, 4.85, 5.45, 0.74, '#fafaf8');
-    monitor(11.4, 4.98, false);
-    chair(11.4, 5.78);
-    plant(12.7, 5.75, 0.85);
+    // 대표님 자리: 동남쪽 구석, 초록 벽을 등지고 앉아 라운지 쪽(북쪽)을 봐요
+    desk(10.9, 12.6, 8.3, 8.9, 0.74, '#fafaf8');
+    monitor(11.75, 8.42, false);
+    chair(11.75, 9.3);
+    plant(12.65, 9.5, 0.85);
     // 라운지: 대표님 자리 바로 앞 (동쪽 통창 쪽)
-    rblock(10.0, 12.6, 1.3, 4.4, 0, 0.012, '#cbc7bf', scene, false);
-    sofa(12.05, 12.85, 1.8, 4.0, 'E', '#8a4f35');
-    sofa(10.3, 11.9, 1.25, 2.0, 'N', '#eee5d3');
-    shape(CYL, scene, 0.42, 0.04, 0.42, X(11.2), 0.42, Z(3.15), '#fbfbf9');
-    shape(CYL, scene, 0.04, 0.4, 0.04, X(11.2), 0.2, Z(3.15), '#c9cdd0');
+    rblock(10.3, 12.6, 4.5, 7.7, 0, 0.012, '#cbc7bf', scene, false);
+    sofa(12.05, 12.85, 5.0, 7.2, 'E', '#8a4f35');
+    sofa(10.5, 12.0, 4.5, 5.25, 'N', '#eee5d3');
+    shape(CYL, scene, 0.42, 0.04, 0.42, X(11.3), 0.42, Z(6.4), '#fbfbf9');
+    shape(CYL, scene, 0.04, 0.4, 0.04, X(11.3), 0.2, Z(6.4), '#c9cdd0');
     plant(12.55, 0.5, 1.15);
+    plant(12.6, 4.1, 0.9);
     // 원목 선반 앞 택배 박스 (파란 테이프, 1~2단)
     [[3.7, 0.42, 1], [4.25, 0.4, 2], [4.8, 0.44, 1], [5.6, 0.4, 2], [6.15, 0.42, 1], [7.0, 0.4, 2], [7.55, 0.44, 2], [8.4, 0.4, 1], [8.95, 0.42, 2]].forEach(([x, h, n]) => {
       for (let k = 0; k < n; k++) { const y = k * h; rblock(x - 0.24, x + 0.24, 4.95, 5.37, y, h - 0.01, '#c9a473'); rblock(x - 0.03, x + 0.03, 4.95, 5.37, y + h - 0.01, 0.004, '#3c6fd6', scene, false); }
@@ -418,7 +418,7 @@ export function mountStockMap(root, store) {
     rblock(3.2, 3.28, 7.05, 7.09, 0, 0.8, '#c9cdd0');
     rblock(3.2, 3.28, 8.11, 8.15, 0, 0.8, '#c9cdd0');
     garmentRackZ(3.5, 7.2, 8.6, r);
-    blueBin(1.4, 9.1); blueBin(4.6, 7.35); blueBin(7.6, 9.0); blueBin(11.8, 9.0);
+    blueBin(1.4, 9.1); blueBin(4.6, 7.35); blueBin(7.6, 9.0); blueBin(9.55, 8.9);
     // 출입구 옆 핸드카트
     rblock(0.75, 1.15, 3.55, 3.6, 0, 1.05, '#e0662b');
     rblock(0.75, 1.15, 3.6, 3.9, 0, 0.04, '#333');
@@ -606,7 +606,7 @@ export function mountStockMap(root, store) {
     return { id, o };
   });
   const areaLabels = [
-    ['업무 데스크', 5.0, 1.25, 3.05], ['대표님 자리', 11.4, 1.5, 5.6], ['라운지', 11.2, 1.2, 3.0],
+    ['업무 데스크', 5.0, 1.25, 3.05], ['대표님 자리', 11.75, 1.5, 9.1], ['라운지', 11.3, 1.2, 6.2],
     ['포장실', 2.0, 1.4, 8.2], ['출입구', 0.55, 1.0, 4.9],
   ].map(([t, x, y, z]) => { const o = makeLabel('lbl-area', t); o.position.set(X(x), y, Z(z)); scene.add(o); return o; });
 
