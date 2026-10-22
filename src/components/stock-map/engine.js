@@ -128,11 +128,11 @@ export function mountStockMap(root, store) {
 
   // front: 물건을 꺼내는 쪽 (S 남 · N 북 · E 동 · W 서 · both 양면)
   const UNITS = [
-    { code: '1-A', zone: '1', x: [0.25, 1.05], z: [0.15, 0.55], h: 1.8, levels: 5, style: 'cube', front: 'S', shoes: false },
-    { code: '1-B', zone: '1', x: [1.1, 2.3], z: [0.15, 0.95], h: 2.2, levels: 4, style: 'boxes', front: 'S' },
-    { code: '1-C', zone: '1', x: [2.35, 3.45], z: [0.15, 0.55], h: 1.9, levels: 4, style: 'olive', front: 'S' },
-    { code: '2-A', zone: '2', x: [3.6, 5.3], z: [0.15, 0.6], h: 1.25, levels: 4, style: 'cube', front: 'S' },
-    { code: '2-B', zone: '2', x: [5.3, 7.0], z: [0.15, 0.6], h: 1.25, levels: 4, style: 'cube', front: 'S' },
+    { code: '1-A', zone: '1', x: [0.25, 1.4], z: [0.15, 0.55], h: 1.45, levels: 5, style: 'cube', front: 'S', shoes: 'mixed' },
+    { code: '1-B', zone: '1', x: [1.45, 2.85], z: [0.15, 0.95], h: 2.3, levels: 4, style: 'boxes', front: 'S', sheets: true },
+    { code: '1-C', zone: '1', x: [2.9, 4.2], z: [0.15, 0.55], h: 1.65, levels: 4, style: 'organizer', front: 'S' },
+    { code: '2-A', zone: '2', x: [4.35, 6.05], z: [0.15, 0.6], h: 1.25, levels: 4, style: 'cube', front: 'S' },
+    { code: '2-B', zone: '2', x: [6.05, 7.75], z: [0.15, 0.6], h: 1.25, levels: 4, style: 'cube', front: 'S' },
     { code: '3-A', zone: '3', x: [3.4, 5.0], z: [5.4, 6.0], h: 2.1, levels: 4, style: 'wood', front: 'N' },
     { code: '3-B', zone: '3', x: [5.0, 6.6], z: [5.4, 6.0], h: 2.1, levels: 4, style: 'wood', front: 'N' },
     { code: '3-C', zone: '3', x: [6.6, 8.2], z: [5.4, 6.0], h: 2.1, levels: 4, style: 'wood', front: 'N' },
@@ -291,20 +291,14 @@ export function mountStockMap(root, store) {
   // 남쪽 벽 (일자 창고 뒤)
   const south = wallGroup([0, 0, 1], [0, 0, Z(10)], 0.3);
   rblock(-0.07, E + 0.07, 9.93, 10.07, 0, WALL_H, WALL, south.g);
-  // 서쪽: 유리 칸막이 + 출입문
+  // 서쪽: 1번 수납장 바로 옆 모서리의 유리 양여닫이 출입문
   const west = wallGroup([-1, 0, 0], [X(0), 0, 0], 0.3);
-  rblock(-0.07, 0.07, -0.07, 3.9, 0, WALL_H, WALL, west.g);
-  rblock(-0.07, 0.07, 5.9, 10.07, 0, WALL_H, WALL, west.g);
-  rblock(-0.07, 0.07, 3.9, 5.9, 2.2, 0.3, WALL, west.g);
-  rblock(-0.02, 0.02, 3.9, 4.4, 0, 2.2, GLASS, west.g, false);
-  rblock(-0.02, 0.02, 5.4, 5.9, 0, 2.2, GLASS, west.g, false);
-  {
-    const door = shape(BOX, west.g, 0.03, 2.15, 1.0, 0, 2.15 / 2, 0, GLASS, false);
-    const a = THREE.MathUtils.degToRad(68);
-    door.rotation.y = a;
-    door.position.x = X(0) + Math.sin(a) * 0.5;
-    door.position.z = Z(4.4) + Math.cos(a) * 0.5;
-  }
+  rblock(-0.07, 0.07, -0.07, 0.3, 0, WALL_H, WALL, west.g);
+  rblock(-0.07, 0.07, 2.3, 10.07, 0, WALL_H, WALL, west.g);
+  rblock(-0.07, 0.07, 0.3, 2.3, 2.2, 0.3, WALL, west.g);
+  rblock(-0.02, 0.02, 0.3, 2.3, 0, 2.2, GLASS, west.g, false);
+  for (const z of [0.3, 0.55, 1.3, 2.05, 2.3]) rblock(-0.04, 0.04, z - 0.02, z + 0.02, 0, 2.2, '#b9bec2', west.g);
+  for (const z of [1.18, 1.42]) rblock(0.03, 0.07, z - 0.012, z + 0.012, 0.75, 0.6, '#9aa1a7', west.g);
   // 동쪽: 라운지 · 대표님 자리 쪽 통창
   const east = wallGroup([1, 0, 0], [X(E), 0, 0], 0.3);
   rblock(E - 0.07, E + 0.07, -0.07, 10.07, 0, 0.3, WALL, east.g);
@@ -332,7 +326,7 @@ export function mountStockMap(root, store) {
   }
   function addSigns() {
     const a = textPlane('TEE LOUNGE', 2.6, 0.34, '#9a7854');
-    a.position.set(X(5.3), 1.8, Z(0) + 0.076);
+    a.position.set(X(6.05), 1.8, Z(0) + 0.076);
     north.g.add(a); north.decor.push(a);
     const b = textPlane('TEE LOUNGE', 1.5, 0.22, '#ffffff');
     b.rotation.y = Math.PI;
@@ -394,22 +388,33 @@ export function mountStockMap(root, store) {
       chair(x0 + 0.75, 4.2);
     }
     rblock(2.0, 8.0, 3.03, 3.07, 0.74, 0.4, '#f2f2ef');
-    // 냉장고 · 화분
-    rblock(8.3, 8.9, 0.15, 0.75, 0, 1.35, '#2b2b2b');
-    plant(9.4, 0.45, 1.1);
+    // 커피 자리 · 냉장고 · 큰 화분 (라운지 왼쪽 벽)
+    rblock(8.9, 9.85, 0.15, 0.6, 0, 0.9, '#f1efea');
+    rblock(9.1, 9.5, 0.2, 0.5, 0.9, 0.3, '#2b2b2b');
+    rblock(9.9, 10.5, 0.15, 0.75, 0, 1.35, '#2b2b2b');
+    plant(10.95, 0.5, 1.2);
     // 대표님 자리: 동남쪽 구석, 초록 벽을 등지고 앉아 라운지 쪽(북쪽)을 봐요
     desk(10.9, 12.6, 8.3, 8.9, 0.74, '#fafaf8');
     monitor(11.75, 8.42, false);
     chair(11.75, 9.3);
     plant(12.65, 9.5, 0.85);
-    // 라운지: 대표님 자리 바로 앞 (동쪽 통창 쪽)
-    rblock(10.3, 12.6, 4.5, 7.7, 0, 0.012, '#cbc7bf', scene, false);
-    sofa(12.05, 12.85, 5.0, 7.2, 'E', '#8a4f35');
-    sofa(10.5, 12.0, 4.5, 5.25, 'N', '#eee5d3');
-    shape(CYL, scene, 0.42, 0.04, 0.42, X(11.3), 0.42, Z(6.4), '#fbfbf9');
-    shape(CYL, scene, 0.04, 0.4, 0.04, X(11.3), 0.2, Z(6.4), '#c9cdd0');
-    plant(12.55, 0.5, 1.15);
-    plant(12.6, 4.1, 0.9);
+    // 라운지: 업무 데스크 동쪽 끝 바로 앞. 통창을 등진 갈색 가죽 소파, 마주 보는 가죽 의자 두 개, 유리 테이블
+    rblock(9.8, 12.9, 1.4, 4.3, 0, 0.012, '#3d3935', scene, false);
+    sofa(12.05, 12.85, 1.7, 3.9, 'E', '#8a4f35');
+    sofa(9.95, 10.6, 1.95, 2.6, 'W', '#6b3f2a');
+    sofa(9.95, 10.6, 3.0, 3.65, 'W', '#6b3f2a');
+    rblock(10.95, 11.65, 2.2, 3.4, 0, 0.42, GLASS);
+    // 오른쪽 크림 소파와 프린터 협탁
+    sofa(10.9, 12.5, 4.45, 5.15, 'S', '#eee5d3');
+    rblock(12.25, 12.85, 4.0, 4.4, 0, 0.55, '#3b2b21');
+    rblock(12.35, 12.8, 4.05, 4.35, 0.55, 0.2, '#f4f4f2');
+    // 창가 화분과 아크 스탠드
+    plant(11.8, 0.7, 1.0);
+    plant(12.45, 0.8, 0.9);
+    plant(12.7, 5.5, 1.1);
+    rblock(12.55, 12.61, 1.25, 1.31, 0, 1.9, '#2a2d30');
+    rblock(11.95, 12.6, 1.25, 1.31, 1.88, 0.03, '#2a2d30');
+    shape(CYL, scene, 0.22, 0.25, 0.22, X(11.95), 1.7, Z(1.28), '#222426');
     // 원목 선반 앞 택배 박스 (파란 테이프, 1~2단)
     [[3.7, 0.42, 1], [4.25, 0.4, 2], [4.8, 0.44, 1], [5.6, 0.4, 2], [6.15, 0.42, 1], [7.0, 0.4, 2], [7.55, 0.44, 2], [8.4, 0.4, 1], [8.95, 0.42, 2]].forEach(([x, h, n]) => {
       for (let k = 0; k < n; k++) { const y = k * h; rblock(x - 0.24, x + 0.24, 4.95, 5.37, y, h - 0.01, '#c9a473'); rblock(x - 0.03, x + 0.03, 4.95, 5.37, y + h - 0.01, 0.004, '#3c6fd6', scene, false); }
@@ -426,29 +431,35 @@ export function mountStockMap(root, store) {
     rblock(3.2, 3.28, 8.11, 8.15, 0, 0.8, '#c9cdd0');
     garmentRackZ(3.5, 7.2, 8.6, r);
     blueBin(1.4, 9.1); blueBin(4.6, 7.35); blueBin(7.6, 9.0); blueBin(9.55, 8.9);
-    // 출입구 옆 핸드카트
-    rblock(0.75, 1.15, 3.55, 3.6, 0, 1.05, '#e0662b');
-    rblock(0.75, 1.15, 3.6, 3.9, 0, 0.04, '#333');
+    // 출입구 옆 핸드카트, 바닥의 투명 리빙박스와 비닐 포장 물건
+    rblock(0.35, 0.75, 1.0, 1.05, 0, 1.05, '#e0662b');
+    rblock(0.35, 0.75, 1.05, 1.35, 0, 0.04, '#333');
+    rblock(1.0, 1.55, 1.0, 1.4, 0, 0.32, GLASS);
+    rblock(1.1, 1.75, 1.45, 1.95, 0, 0.22, '#3a3f45');
   }
 
   // ───────── 재고 선반 ─────────
   const YAW = { S: 0, N: Math.PI, E: Math.PI / 2, W: -Math.PI / 2, both: 0 };
   const PAL = ['#ecebe7', '#d5d9dc', '#a7aeb6', '#45536a', '#2f3540', '#dacfbe', '#8b96a5', '#c6c0b3'];
   const SHOE = '#ec6a2c';
+  const SHOE_MIX = ['#c9a473', '#d3b285', '#2f5fb3', '#e9c22c', '#ec6a2c', '#bf9a69', '#8a3b3b'];
+  const KHAKI = ['#6d7550', '#646b48', '#777e59'];
+  const BUBBLE = new THREE.MeshStandardMaterial({ color: '#f4f6f7', transparent: true, opacity: 0.85, roughness: 0.3 });
 
   function levelFloors(u) {
     const n = u.levels;
     if (u.style === 'cube') return Array.from({ length: n }, (_, i) => i === 0 ? 0.03 : i * u.h / (n - 1));
-    if (u.style === 'boxes' || u.style === 'olive') return Array.from({ length: n }, (_, i) => i * u.h / n);
+    if (u.style === 'boxes') return Array.from({ length: n }, (_, i) => i * u.h / n);
+    if (u.style === 'organizer') return Array.from({ length: n }, (_, i) => 0.03 + i * (u.h - 0.03) / n);
     const base = 0.1, step = (u.h - base) / n;
     return Array.from({ length: n }, (_, i) => base + i * step);
   }
 
-  function shoes(stock, rnd, L, D, y, maxH) {
+  function shoes(stock, rnd, L, D, y, maxH, colors = [SHOE]) {
     const bw = 0.34, bh = 0.12, bd = Math.min(0.24, D * 0.8);
     for (let x = -L / 2 + 0.04; x + bw < L / 2 - 0.02; x += bw + 0.02) {
-      const tiers = Math.max(1, Math.min(Math.floor(maxH / bh), 1 + Math.floor(rnd() * 3)));
-      for (let t = 0; t < tiers; t++) stock.push([x + bw / 2, y + t * bh, 0, bw, bh - 0.006, bd, SHOE]);
+      const tiers = Math.max(1, Math.min(Math.floor(maxH / bh), (colors.length > 1 ? 2 : 1) + Math.floor(rnd() * 3)));
+      for (let t = 0; t < tiers; t++) stock.push([x + bw / 2, y + t * bh, 0, bw, bh - 0.006, bd, colors[Math.floor(rnd() * colors.length)]]);
     }
   }
   function fillLevel(stock, rnd, u, L, D, y, maxH, li) {
@@ -495,24 +506,41 @@ export function mountStockMap(root, store) {
         if (rnd() < 0.12) continue;
         stock.push([-L / 2 + (k + 0.5) * cw, floors[r], 0.01, cw * 0.76, rowH * (0.35 + rnd() * 0.42), D * 0.78, PAL[Math.floor(rnd() * PAL.length)]]);
       }
-      if (u.shoes !== false) shoes(stock, rnd, L, D, u.h, 0.42);
+      if (u.shoes === 'mixed') shoes(stock, rnd, L, D, u.h, 0.55, SHOE_MIX);
+      else if (u.shoes !== false) shoes(stock, rnd, L, D, u.h, 0.42);
     },
-    olive(g, u, L, D, floors) {
-      block(g, L, u.h, D, 0, 0, 0, '#56623f');
-      const cols = Math.max(2, Math.round(L / 0.36)), cw = L / cols, rh = u.h / u.levels;
-      for (let r = 0; r < u.levels; r++) for (let c = 0; c < cols; c++) block(g, cw * 0.86, rh * 0.8, 0.03, -L / 2 + cw * (c + 0.5), r * rh + rh * 0.1, D / 2 + 0.012, '#6e7b55');
+    // 진한 갈색 큐브 수납장: 칸마다 카키색 박스를 쌓고, 위에 큰 택배 박스
+    organizer(g, u, L, D, floors, rnd, stock) {
+      const c = '#3b2b21', t = 0.03;
+      block(g, L, u.h, t, 0, 0, -D / 2 + t / 2, c);
+      for (const x of [-L / 2 + t / 2, L / 2 - t / 2]) block(g, t, u.h, D, x, 0, 0, c);
+      for (let i = 0; i <= u.levels; i++) block(g, L, t, D, 0, i === u.levels ? u.h - t : floors[i] - t, 0, c);
+      const cols = Math.max(2, Math.round(L / 0.43)), cw = L / cols;
+      for (let k = 1; k < cols; k++) block(g, t, u.h, D, -L / 2 + k * cw, 0, 0, c);
+      for (let r = 0; r < u.levels; r++) for (let k = 0; k < cols; k++) {
+        const n = 2 + Math.floor(rnd() * 2);
+        for (let j = 0; j < n; j++) stock.push([-L / 2 + (k + 0.5) * cw, floors[r] + j * 0.115, 0.01, cw * 0.82, 0.11, D * 0.8, KHAKI[Math.floor(rnd() * KHAKI.length)]]);
+      }
+      stock.push([-L / 4, u.h, 0, L * 0.48, 0.38, D * 1.3, '#c9a473'], [L / 4, u.h, 0, L * 0.46, 0.32, D * 1.2, '#bf9a69']);
     },
-    boxes(g, u, L, D, floors, rnd) {
+    boxes(g, u, L, D, floors, rnd, stock) {
       const tierH = u.h / u.levels;
+      const right = L / 2 - (u.sheets ? 0.55 : 0);
       for (let t = 0; t < u.levels; t++) {
         let x = -L / 2;
-        while (x < L / 2 - 0.25) {
-          const w = Math.min(0.38 + rnd() * 0.22, L / 2 - x);
+        while (x < right - 0.25) {
+          const w = Math.min(0.38 + rnd() * 0.22, right - x);
           const h = tierH * (0.86 + rnd() * 0.1);
           block(g, w - 0.02, h, D * (0.8 + rnd() * 0.15), x + w / 2, t * tierH, (rnd() - 0.5) * 0.05, ['#c9a473', '#bf9a69', '#d3b285'][Math.floor(rnd() * 3)]);
           if (rnd() > 0.5) block(g, 0.06, 0.004, D * 0.8, x + w / 2, t * tierH + h, 0, '#3c6fd6', false);
           x += w;
         }
+      }
+      if (u.sheets) {
+        // 접어 둔 박스판 더미와 에어캡 뭉치
+        const cx = right + 0.275;
+        for (let i = 0; i < 26; i++) stock.push([cx + (rnd() - 0.5) * 0.04, i * 0.058, (rnd() - 0.5) * 0.04, 0.51, 0.052, D * 0.95, i % 2 ? '#c9a473' : '#b8935f']);
+        shape(BALL, g, 0.32, 0.26, 0.24, cx - 0.35, 1.25, D / 2 + 0.05, BUBBLE);
       }
     },
   };
@@ -646,8 +674,8 @@ export function mountStockMap(root, store) {
     return { id, o };
   });
   const areaLabels = [
-    ['업무 데스크', 5.0, 1.25, 3.05], ['대표님 자리', 11.75, 1.5, 9.1], ['라운지', 11.3, 1.2, 6.2],
-    ['포장실', 2.0, 1.4, 8.2], ['출입구', 0.55, 1.0, 4.9],
+    ['업무 데스크', 5.0, 1.25, 3.05], ['대표님 자리', 11.75, 1.5, 9.1], ['라운지', 11.3, 1.2, 2.8],
+    ['포장실', 2.0, 1.4, 8.2], ['출입구', 0.55, 1.0, 1.3],
   ].map(([t, x, y, z]) => { const o = makeLabel('lbl-area', t); o.position.set(X(x), y, Z(z)); scene.add(o); return o; });
 
   // ───────── 상태 · 화면 ─────────
