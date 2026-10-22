@@ -1,5 +1,5 @@
 /* 재고 지도 화면 전용 스타일. 모든 규칙이 .stockmap 안에서만 적용돼요. */
-.stockmap { position: relative; flex: 1; min-height: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--fg); font-family: var(--font-ui); }
+.stockmap { position: relative; flex: 1; min-height: 0; height: 100%; overflow: hidden; container: sm / size; background: var(--bg); color: var(--fg); font-family: var(--font-ui); }
 .stockmap [hidden] { display: none !important; }
 /* Layout: 3D 사무실 모형이 화면 전체를 채우고, 검색 패널(데스크톱 왼쪽 · 휴대폰 위)과 선반 상세(데스크톱 오른쪽 · 휴대폰 아래)가 그 위에 떠 있어요 */
 .stockmap {
@@ -147,7 +147,7 @@
 .stockmap .preview .bad { color: var(--danger); }
 .stockmap .toast { position: absolute; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 5; transform: translateX(-50%); max-width: calc(100% - 32px); padding: 9px 14px; border-radius: 10px; background: var(--fg); color: var(--panel); font-size: 13px; box-shadow: var(--shadow); pointer-events: none; }
 
-@media (max-width: 719px) {
+@container sm (max-width: 719px) {
   .stockmap .ui { flex-direction: column; justify-content: flex-start; gap: 10px; padding-block: 10px; }
   .stockmap .panel { width: 100%; max-height: 58%; flex: none; }
   .stockmap .panel-top { padding: 10px 12px; gap: 8px; }
@@ -161,7 +161,7 @@
   .stockmap .tools .btn, .stockmap .actions .btn { flex: none; }
 }
 /* 낮은 창(앱 옆 패널 등)에서는 제목 줄을 숨겨 지도를 더 보여줘요 */
-@media (max-width: 719px) and (max-height: 640px) {
+@container sm (max-width: 719px) and (max-height: 640px) {
   .stockmap .title-row { display: none; }
   .stockmap .panel { max-height: 64%; }
 }

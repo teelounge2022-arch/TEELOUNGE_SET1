@@ -615,7 +615,7 @@ export function mountStockMap(root, store) {
   const LABEL_MODES = ['zone', 'unit', 'off'];
   const LABEL_TEXT = { zone: '이름표: 구역', unit: '이름표: 선반 코드', off: '이름표: 끔' };
   const panel = $('#panel'), list = $('#list'), sheet = $('#sheet'), input = $('#q');
-  const isPhone = () => window.innerWidth < 720;
+  const isPhone = () => root.clientWidth < 720;
 
   function search(q) {
     const toks = q.toLowerCase().split(/\s+/).filter(Boolean);
@@ -741,7 +741,7 @@ export function mountStockMap(root, store) {
     let msg;
     if (data.mode === 'loading' || (data.mode === 'live' && !data.loaded)) msg = '재고를 불러오는 중이에요.';
     else if (data.mode === 'offline') msg = data.setup
-      ? 'Supabase에 재고 테이블이 아직 없어 예시를 보여드려요. supabase/stock_items.sql을 한 번 실행하면 실제 재고가 저장돼요.'
+      ? '재고 테이블(stock_items)이 아직 준비되지 않아 예시를 보여드려요. 관리자가 Supabase에 테이블을 만들면 실제 재고가 저장돼요.'
       : 'Supabase 연결 설정이 없어 예시를 보여드려요.';
     else if (data.demo) msg = '예시 데이터를 보는 중이에요. 저장된 재고가 아니에요.';
     else msg = `재고 ${ITEMS.length}건 · 팀원과 실시간으로 공유돼요${editable() ? '' : ' · 보기 전용'}.`;
@@ -1295,11 +1295,11 @@ export function mountStockMap(root, store) {
     e.currentTarget.textContent = LABEL_TEXT[state.labelMode];
     refresh3D();
   });
-  on(document, 'keydown', (e) => { if (e.key === 'Escape' && state.selected && document.activeElement !== input && !root.querySelector('dialog[open]')) closeSheet(); });
+  on(document, 'keydown', (e) => { if (e.key === 'Escape' && state.selected && (root.getRootNode().activeElement || document.activeElement) !== input && !root.querySelector('dialog[open]')) closeSheet(); });
   // 숫자 키 1~6: 그 구역으로 카메라 이동 · 0: 전체 보기 (글자 입력 중에는 무시)
   on(document, 'keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
-    if (e.target.closest?.('input, textarea, select, [contenteditable="true"]') || root.querySelector('dialog[open]')) return;
+    if ((e.composedPath()[0] || e.target).closest?.('input, textarea, select, [contenteditable="true"]') || root.querySelector('dialog[open]')) return;
     if (ZONES[e.key]) { e.preventDefault(); focusZone(e.key); }
     else if (e.key === '0') { e.preventDefault(); state.zone = null; if (!state.query.trim()) state.hits = new Set(); refresh(); overview(); }
   });
