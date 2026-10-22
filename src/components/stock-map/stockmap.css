@@ -104,6 +104,7 @@
 .stockmap .lbl-zone .badge { width: 20px; height: 20px; font-size: 11px; }
 .stockmap .lbl-zone.is-hit .badge { background: var(--accent); color: var(--accent-ink); }
 .stockmap .lbl-area { font-size: 11.5px; font-weight: 500; color: var(--muted); padding: 2px 7px; border-radius: 6px; background: var(--panel); background: color-mix(in srgb, var(--panel) 72%, transparent); }
+.stockmap .lbl-desk { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 999px; background: var(--fg); color: var(--panel); }
 .stockmap .lbl-unit { font-family: var(--font-code); font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 6px; background: var(--panel); border: 1px solid var(--line); color: var(--fg); cursor: pointer; pointer-events: auto; }
 .stockmap .lbl-unit.is-hit { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 
@@ -152,6 +153,7 @@
   .stockmap .panel { width: 100%; max-height: 58%; flex: none; }
   .stockmap .panel-top { padding: 10px 12px; gap: 8px; }
   .stockmap h1 { font-size: 16px; }
+  .stockmap .lbl-desk { font-size: 10px; padding: 1px 5px; }
   .stockmap .eyebrow { display: none; }
   .stockmap .sheet { width: 100%; margin-top: auto; max-height: 46%; flex: none; }
   .stockmap .panel:not(.list-open) .list, .stockmap .panel:not(.list-open) .note { display: none; }

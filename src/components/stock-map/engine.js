@@ -156,6 +156,18 @@ export function mountStockMap(root, store) {
   UNITS.sort((a, b) => a.code.localeCompare(b.code));
   const UNIT_SPEC = new Map(UNITS.map((u) => [u.code, u]));
 
+  // 업무 데스크 번호: 출입구 쪽부터 북쪽 줄 1~4, 남쪽 줄 5~8. seat 은 의자 자리(AI 작업 표시를 올릴 곳)
+  const DESKS = Array.from({ length: 8 }, (_, k) => {
+    const i = k % 4, north = k < 4, x0 = 2 + i * 1.5;
+    return {
+      no: k + 1,
+      x: [x0 + 0.02, x0 + 1.48],
+      z: north ? [2.3, 3.03] : [3.07, 3.8],
+      monitor: [x0 + 0.75, north ? 2.88 : 3.22],
+      seat: [x0 + 0.75, north ? 1.9 : 4.2],
+    };
+  });
+
   // 예시 재고: 저장된 재고가 없을 때 '예시로 둘러보기'에서만 보여요. [품목, 컬러, 사이즈, 수량, 선반, 단(1 = 맨 아래)]
   const EXAMPLES = [
     ['택배 박스 (소)', '부자재', '', 120, '1-B', 1],
@@ -378,14 +390,10 @@ export function mountStockMap(root, store) {
   {
     const r = rng(7);
     // 업무 데스크 2줄 (가운데 타공판 칸막이)
-    for (let i = 0; i < 4; i++) {
-      const x0 = 2 + i * 1.5;
-      desk(x0 + 0.02, x0 + 1.48, 2.3, 3.03);
-      desk(x0 + 0.02, x0 + 1.48, 3.07, 3.8);
-      monitor(x0 + 0.75, 2.88, false);
-      monitor(x0 + 0.75, 3.22, false);
-      chair(x0 + 0.75, 1.9);
-      chair(x0 + 0.75, 4.2);
+    for (const d of DESKS) {
+      desk(d.x[0], d.x[1], d.z[0], d.z[1]);
+      monitor(d.monitor[0], d.monitor[1], false);
+      chair(d.seat[0], d.seat[1]);
     }
     rblock(2.0, 8.0, 3.03, 3.07, 0.74, 0.4, '#f2f2ef');
     // 커피 자리 · 냉장고 · 큰 화분 (라운지 왼쪽 벽)
@@ -684,9 +692,15 @@ export function mountStockMap(root, store) {
     return { id, o };
   });
   const areaLabels = [
-    ['업무 데스크', 5.0, 1.25, 3.05], ['대표님 자리', 11.75, 1.5, 9.1], ['라운지', 11.3, 1.2, 2.8],
+    ['대표님 자리', 11.75, 1.5, 9.1], ['라운지', 11.3, 1.2, 2.8],
     ['포장실', 2.0, 1.4, 8.2], ['출입구', 0.55, 1.0, DOOR_MID],
   ].map(([t, x, y, z]) => { const o = makeLabel('lbl-area', t); o.position.set(X(x), y, Z(z)); scene.add(o); return o; });
+  const deskLabels = DESKS.map((d) => {
+    const o = makeLabel('lbl-desk', `데스크 ${d.no}`);
+    o.position.set(X(d.seat[0]), 0.95, Z(d.seat[1]));
+    scene.add(o);
+    return o;
+  });
 
   // ───────── 상태 · 화면 ─────────
   const state = { query: '', results: [], hits: new Set(), zone: null, selected: null, level: null, labelMode: 'zone', showZones: false, collapsed: false };
@@ -972,7 +986,7 @@ export function mountStockMap(root, store) {
       o.visible = state.labelMode === 'zone';
       o.element.classList.toggle('is-hit', state.zone === id || unitsOfZone(id).some((R) => hits.has(R.u.code) || state.selected === R.u.code));
     }
-    for (const o of areaLabels) o.visible = state.labelMode !== 'off';
+    for (const o of [...areaLabels, ...deskLabels]) o.visible = state.labelMode !== 'off';
     invalidate();
   }
 
