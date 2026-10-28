@@ -1,0 +1,44 @@
+{
+  "files": [
+    {
+      "file": "output/poster.png",
+      "bytes": 401993
+    },
+    {
+      "file": "output/teelounge_moon_golf_1080x1920.mp4",
+      "bytes": 3177498
+    },
+    {
+      "file": "audio/music_sfx.wav",
+      "bytes": 6528044
+    },
+    {
+      "file": "scripts/audio_bed.py",
+      "bytes": 12535
+    },
+    {
+      "file": "scripts/illustrations.py",
+      "bytes": 19636
+    },
+    {
+      "file": "scripts/make_video.py",
+      "bytes": 14857
+    },
+    {
+      "file": "metadata/audio_info.json",
+      "bytes": 1794
+    },
+    {
+      "file": "metadata/blender_skills_install.json",
+      "bytes": 527
+    },
+    {
+      "file": "metadata/quality_report.json",
+      "bytes": 1787
+    },
+    {
+      "file": "metadata/video_build.json",
+      "bytes": 417
+    }
+  ]
+}

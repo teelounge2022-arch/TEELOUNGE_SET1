@@ -1,0 +1,12 @@
+{
+  "file": "output/teelounge_moon_golf_1080x1920.mp4",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "frames": 1020,
+  "duration_seconds": 34,
+  "render_seconds": 78.78,
+  "video_engine": "Original procedural 2.5D layers/Pillow/FFmpeg",
+  "audio": "Original music and sound effects; no voice-over",
+  "reference_access": "Drive reference could not be fetched: destination policy403; source contents not used."
+}

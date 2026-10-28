@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "title": "달에도 골프공이 있다",
+  "language": "ko-KR",
+  "duration_seconds": 34,
+  "aspect_ratio": "9:16",
+  "timing_status": "editorial_guide_not_word_aligned",
+  "narration_hangul_syllables": 150,
+  "visual_style": "Original shaded illustration layers, independent foreground/background parallax, one-hand character motion and Korean kinetic typography.",
+  "shared_constraints": [
+    "No historical likeness or facial reconstruction.",
+    "No logos, insignia, lettering or numbers on physical scene assets; explanatory video captions are separate overlays.",
+    "No distance claims or invented quotes.",
+    "Do not imply both balls were struck in a single swing.",
+    "Do not label the motion path as a measured reconstruction.",
+    "Refine segment and subtitle timing after actual narration is produced."
+  ],
+  "beats": [
+    {
+      "id": "hook",
+      "start": 0,
+      "end": 3,
+      "narration": "달에도 골프공이 있다는 거, 아셨나요?",
+      "subtitle": "달에도 골프공이 있다?",
+      "visual": "Close lunar dust with a white dimpled golf ball at frame right and an empty lower central area.",
+      "motion": "Slow 2.5D push-in, separate foreground dust from distant horizon; reveal the ball before the caption settles.",
+      "text_emphasis": "골프공",
+      "claims": [
+        "moon_golf"
+      ]
+    },
+    {
+      "id": "setup",
+      "start": 3,
+      "end": 8,
+      "narration": "천구백칠십일 년, 달에 도착한 우주비행사 앨런 셰퍼드.",
+      "subtitle": "1971년 2월 6일\n아폴로 14호 · 앨런 셰퍼드",
+      "visual": "Wide lunar plate; a generic faceless astronaut is a separate foreground layer.",
+      "motion": "Gentle lateral parallax with a brief date reveal, followed by the name; keep the horizon stable.",
+      "text_emphasis": "1971년 2월 6일",
+      "claims": [
+        "mission_and_date"
+      ]
+    },
+    {
+      "id": "tool",
+      "start": 8,
+      "end": 13,
+      "narration": "그는 시료 채취 도구에 육 번 아이언 헤드를 끼웠죠.",
+      "subtitle": "시료 채취 도구 + 6번 아이언",
+      "visual": "Low-angle S3 iron-tool plate, showing the recognizable lofted iron face, hosel and long metallic handle.",
+      "motion": "Rack visual attention from the shaft toward the head with a modest crop push; add two separate caption labels rather than engravings.",
+      "text_emphasis": "6번 아이언",
+      "claims": [
+        "modified_tool"
+      ]
+    },
+    {
+      "id": "one_handed_swing",
+      "start": 13,
+      "end": 19,
+      "narration": "두꺼운 우주복 탓에 몸을 비틀기도 어려웠지만, 한 손으로 휘둘렀습니다.",
+      "subtitle": "두꺼운 우주복 때문에\n한 손으로 스윙",
+      "visual": "Generic astronaut composited over the lunar plate, using one hand on the long tool; face remains obscured.",
+      "motion": "One restrained swing gesture with separate arm/tool layers and slight body pivot. This is an illustrative gesture, not frame-accurate reenactment.",
+      "text_emphasis": "한 손으로",
+      "claims": [
+        "one_handed"
+      ]
+    },
+    {
+      "id": "two_balls",
+      "start": 19,
+      "end": 24,
+      "narration": "그날, 골프공 두 개가 달의 먼지 위를 날아갔죠.",
+      "subtitle": "달에서 친 골프공, 두 개",
+      "visual": "Two separate illustrative ball inserts, followed by two small balls resting apart on lunar dust.",
+      "motion": "Show the balls sequentially with a cut or dissolve between them; use short stylized arcs without distance ticks or a shared impact moment.",
+      "text_emphasis": "두 개",
+      "claims": [
+        "two_balls"
+      ]
+    },
+    {
+      "id": "moon_fact",
+      "start": 24,
+      "end": 29,
+      "narration": "달의 중력은 지구의 약 육분의 일. 장소부터 다른 골프였습니다.",
+      "subtitle": "달의 중력 ≈ 지구의 1/6",
+      "visual": "Lunar plate with the ball and its grounded shadow; a clean gravity comparison appears as a video overlay.",
+      "motion": "Ease to a still frame; animate a simple six-to-one proportion diagram without implying a sixfold shot distance.",
+      "text_emphasis": "약 1/6",
+      "claims": [
+        "gravity"
+      ]
+    },
+    {
+      "id": "memorable_end",
+      "start": 29,
+      "end": 34,
+      "narration": "그리고 그 골프공 두 개는, 지금도 달에 남아 있습니다.",
+      "subtitle": "그 골프공 두 개는\n지금도 달에 있습니다",
+      "visual": "A pair of golf balls on quiet lunar dust with the generic astronaut absent from frame.",
+      "motion": "Very slow pull-back; let the last frame and caption hold for approximately one second after the final syllable if narration length permits.",
+      "text_emphasis": "지금도 달에",
+      "claims": [
+        "remain_on_moon"
+      ]
+    }
+  ],
+  "claims": {
+    "moon_golf": "Alan Shepard played golf on the Moon during Apollo 14.",
+    "mission_and_date": "Apollo 14 commander Alan Shepard struck golf balls on the lunar surface on 1971-02-06.",
+    "modified_tool": "A six-iron head was attached to a lunar sampling-tool handle.",
+    "one_handed": "The bulky pressure suit constrained movement, and he swung one-handed.",
+    "two_balls": "He hit two golf balls; this does not specify two swings or any measured distance.",
+    "gravity": "Lunar surface gravity is approximately one sixth of Earth's.",
+    "remain_on_moon": "The two golf balls were left on the Moon."
+  },
+  "sources": [
+    {
+      "publisher": "NASA",
+      "title": "Apollo 14 mission",
+      "url": "https://www.nasa.gov/mission/apollo-14/",
+      "verification": "remembered_official_reference_not_live_fetched",
+      "supports": [
+        "moon_golf",
+        "mission_and_date"
+      ]
+    },
+    {
+      "publisher": "NASA",
+      "title": "Apollo 14 Lunar Surface Journal — Closeout",
+      "url": "https://www.hq.nasa.gov/alsj/a14/a14.clsout.html",
+      "verification": "remembered_official_reference_not_live_fetched",
+      "supports": [
+        "modified_tool",
+        "one_handed",
+        "two_balls",
+        "remain_on_moon"
+      ]
+    },
+    {
+      "publisher": "NASA Science",
+      "title": "Moon Facts",
+      "url": "https://science.nasa.gov/moon/facts/",
+      "verification": "remembered_official_reference_not_live_fetched",
+      "supports": [
+        "gravity"
+      ]
+    }
+  ],
+  "source_note": "Known NASA reference URLs, not live-fetched in this session. They are not represented as newly verified source content.",
+  "audio_version": "Captioned music-and-sound-effects version; narration script supplied separately, no recorded voice-over."
+}

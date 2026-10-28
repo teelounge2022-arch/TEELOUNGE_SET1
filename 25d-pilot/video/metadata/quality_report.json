@@ -1,0 +1,70 @@
+{
+  "status": "passed",
+  "video_file": "output/teelounge_moon_golf_1080x1920.mp4",
+  "sha256": "0b910e14e7b0ebf23e3d1cf73b30836c08184c7ded9c8eceb58a396b40f7bffb",
+  "probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "index": 0,
+        "codec_name": "h264",
+        "width": 1080,
+        "height": 1920,
+        "pix_fmt": "yuv420p",
+        "avg_frame_rate": "30/1",
+        "nb_frames": "1020"
+      },
+      {
+        "index": 1,
+        "codec_name": "aac",
+        "sample_rate": "48000",
+        "channels": 2,
+        "avg_frame_rate": "0/0",
+        "nb_frames": "1595"
+      }
+    ],
+    "format": {
+      "duration": "34.000000",
+      "size": "3177498"
+    }
+  },
+  "full_decode": {
+    "exit_code": 0,
+    "video_frames": 1020,
+    "near_total_black_frames": 0,
+    "errors": 0,
+    "method": "FFmpeg decode; blackdetect d=.02,pix_th=.02,pic_th=.98"
+  },
+  "visual_review": {
+    "source": "Frames decoded from final MP4",
+    "seconds": [
+      1.8,
+      5,
+      10.5,
+      15,
+      16.4,
+      18,
+      21.5,
+      26.5,
+      31.5
+    ],
+    "checks": [
+      "Korean title and subtitle visibility",
+      "No cropped or overlapping caption text",
+      "Recognizable iron head and single-hand swing",
+      "Ball and flight trail visible",
+      "Distinct chapter contents and no blank sampled frame"
+    ],
+    "issues_blocking_delivery": []
+  },
+  "audio_ebur128": {
+    "integrated_lufs": -19.2,
+    "loudness_range_lu": 1.2,
+    "true_peak_dbfs": -1.1,
+    "clipping_detected": false
+  },
+  "audio_contents": "Original synthesized music and effects, no recorded narration",
+  "reference_materials": "Drive ZIP not retrieved; independent original illustrations and script used",
+  "blender_runtime_used_for_video": false
+}

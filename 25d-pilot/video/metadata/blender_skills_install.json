@@ -1,0 +1,11 @@
+{
+  "repository": "https://github.com/EL4CTEO/blender-skills",
+  "commit": "71d031dab8bc6729504d11a78cbe91945401045f",
+  "skill_count": 22,
+  "codex_user_directory": "/home/agent/.agents/skills",
+  "workspace_directory": "/workspace/.agents/skills",
+  "validation": "tools/validate_skills.py returned OK; all22 SKILL.md symlinks resolve",
+  "blender_runtime_changed": false,
+  "upstream_compatibility": "Blender5.2LTS+",
+  "video_renderer": "Pillow/FFmpeg originallayered2.5D; no Blender runtime was invoked for this video."
+}

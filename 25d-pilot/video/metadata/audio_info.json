@@ -1,0 +1,70 @@
+{
+  "duration_seconds": 34.0,
+  "sample_rate_hz": 48000,
+  "channels": 2,
+  "sample_width_bits": 16,
+  "sample_frames": 1632000,
+  "tempo_bpm": 96.0,
+  "seed": 19710206,
+  "peak_linear": 0.8912353515625,
+  "peak_dbfs": -1.0002,
+  "rms_linear": 0.08929397072991534,
+  "rms_dbfs": -20.9836,
+  "clipped_sample_count": 0,
+  "intro_fade_seconds": 0.95,
+  "outro_fade_seconds": 1.65,
+  "music": "Original D-minor/minor-9 warm pad, restrained pluck, soft bass, light kick/ticks with sparse stereo reflections",
+  "effects": [
+    {
+      "type": "soft_whoosh",
+      "center_seconds": 3.4,
+      "duration_seconds": 0.7
+    },
+    {
+      "type": "soft_whoosh",
+      "center_seconds": 8.0,
+      "duration_seconds": 0.7
+    },
+    {
+      "type": "soft_whoosh",
+      "center_seconds": 13.0,
+      "duration_seconds": 0.7
+    },
+    {
+      "type": "golf_impact",
+      "time_seconds": 16.0,
+      "duration_seconds": 0.23
+    },
+    {
+      "type": "golf_impact",
+      "time_seconds": 20.0,
+      "duration_seconds": 0.23
+    },
+    {
+      "type": "soft_whoosh",
+      "center_seconds": 24.0,
+      "duration_seconds": 0.7
+    },
+    {
+      "type": "soft_whoosh",
+      "center_seconds": 29.0,
+      "duration_seconds": 0.7
+    }
+  ],
+  "subtitle_duck_centers_seconds": [
+    3.4,
+    8.0,
+    13.0,
+    16.0,
+    20.0,
+    24.0,
+    29.0
+  ],
+  "source": "Local original procedural synthesis; no borrowed music, samples, voices, TTS or external downloads",
+  "voiceover_present": false,
+  "scientific_note": "Impact and whoosh cues are stylized editorial effects, not a claim that sound propagates through the lunar vacuum.",
+  "file": "audio/music_sfx.wav",
+  "file_bytes": 6528044,
+  "sha256": "8ce32c933cd5d36970a905baa3b5633e7ac2ce8ec4acdfda1a49d536749cde7c",
+  "saved_wav_verified": true
+}
